@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "526759067716",
+    "project_id": "profilepage-fe4de",
+    "storage_bucket": "profilepage-fe4de.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526759067716:android:bd40edba3462b585803c11",
+        "android_client_info": {
+          "package_name": "com.example.profilepage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDty8vfTMMIpdx6CalaXhQegrqcz72cJH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
