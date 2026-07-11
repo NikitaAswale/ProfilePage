@@ -1,9 +1,7 @@
 package com.example.profilepage
 
-import android.R
-import android.widget.Button
-import android.widget.Space
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +25,6 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -42,6 +39,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,15 +51,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserProfile() {
+fun UserProfile(navController: NavController,
+viewModel: UserProfileViewModel = hiltViewModel()) {
 
+    val profile by viewModel.info.collectAsState()
     var icon: ImageVector
     var title: String
-    var email: String
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -175,7 +177,7 @@ fun UserProfile() {
 
             LazyColumn() {
                 item {
-                    UserInfo()
+                    UserInfo(navController, profile)
                 }
             }
         }
@@ -183,7 +185,10 @@ fun UserProfile() {
 }
 
 @Composable
-fun UserInfo() {
+fun UserInfo(
+    navController: NavController,
+    profile: Info?
+) {
 
     HorizontalDivider()
 
@@ -198,7 +203,7 @@ fun UserInfo() {
                 Spacer(Modifier.height(20.dp))
 
                 Text(
-                    "User Name",
+                    text="${profile?.name}",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -207,7 +212,7 @@ fun UserInfo() {
                 )
 
                 Text(
-                    "@useremail",
+                    "${profile?.username}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Gray,
@@ -243,7 +248,7 @@ fun UserInfo() {
                 Spacer(Modifier.height(40.dp))
 
                 Text(
-                    "Digital Product Designer focusing on minimalist interfaces and accessible systems, Based in San Francisco.",
+                    text = "${profile?.bio}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     fontStyle = FontStyle.Normal,
@@ -267,7 +272,10 @@ fun UserInfo() {
                         Text(
                             text = "Edit Profile",
                             color = Color.Black,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.clickable{
+                                navController.navigate("Screen2")
+                            }
                         )
                     }
 
@@ -298,12 +306,12 @@ fun UserInfo() {
                 ) {
                     Details(
                         title = "Email",
-                        email = "@usermail"
+                        email = "${profile?.email}"
                     )
 
                     Details(
                         title = "Phone Number",
-                        email = "+ (415) 555-0123"
+                        email = "${profile?.phoneno}"
                     )
                 }
 

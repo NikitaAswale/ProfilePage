@@ -111,9 +111,13 @@ class UserProfileViewModel @Inject constructor() : ViewModel() {
                         phoneno = phoneno,
                     )
 
-
                 _info.value = data
-                //_status.value = null
+                _nameInput.value = name
+                _usernameInput.value = username
+                _bioInput.value = bio
+                _emailInput.value = email
+                _phonenoInput.value = phoneno
+
             }
             .addOnFailureListener { e ->
                 // _status.value = "Error: ${e.message}"
