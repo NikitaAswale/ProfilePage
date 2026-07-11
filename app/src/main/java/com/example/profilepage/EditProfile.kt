@@ -41,22 +41,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfile(
-    viewModel: UserProfileViewModel = hiltViewModel()
+    viewModel: UserProfileViewModel = hiltViewModel(),
+    navController: NavController
 ) {
 
-    val profilelist by viewModel.info.collectAsState()
-    val nameInput by viewModel.nameInput.collectAsState()
-    val usernameInput by viewModel.usernameInput.collectAsState()
-    val bioInput by viewModel.bioInput.collectAsState()
-    val emailInput by viewModel.emailInput.collectAsState()
-    val phonenoInput by viewModel.phonenoInput.collectAsState()
+//    val profilelist by viewModel.info.collectAsState()
+//    val nameInput by viewModel.nameInput.collectAsState()
+//    val usernameInput by viewModel.usernameInput.collectAsState()
+//    val bioInput by viewModel.bioInput.collectAsState()
+//    val emailInput by viewModel.emailInput.collectAsState()
+//    val phonenoInput by viewModel.phonenoInput.collectAsState()
 
     Scaffold(
         topBar = {
@@ -73,7 +73,10 @@ fun EditProfile(
                             "Cancel",
                             fontSize = 16.sp,
                             color = Color.Gray,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.clickable {
+                                navController.navigate("Screen1")
+                            }
                         )
 
                         Text(
@@ -91,6 +94,7 @@ fun EditProfile(
                             modifier = Modifier
                                 .clickable {
                                     viewModel.saveProfile()
+                                    navController.navigate("Screen1")
                                 }
                         )
                     }
@@ -137,7 +141,10 @@ fun EditProfile(
             LazyColumn() {
                 item {
                     EditInfo(
-                        viewModel
+                        viewModel,
+                        onNameChange = { name ->
+                            viewModel.updateName(name)
+                        }
                     )
                 }
             }
@@ -167,19 +174,16 @@ fun BottomBar(icon: ImageVector, name: String) {
 
 @Composable
 fun EditInfo(
-    viewModel: UserProfileViewModel
+    viewModel: UserProfileViewModel,
+    onNameChange: (String) -> Unit
 ) {
+    val profile by viewModel.info.collectAsState()
+    val name by viewModel.nameInput.collectAsState()
+    val username by viewModel.usernameInput.collectAsState()
+    val bio by viewModel.bioInput.collectAsState()
+    val email by viewModel.emailInput.collectAsState()
+    val phoneno by viewModel.phonenoInput.collectAsState()
 
-    var name by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phoneno by remember { mutableStateOf("") }
-    var nameError by remember { mutableStateOf("") }
-    var usernameError by remember { mutableStateOf("") }
-    var bioError by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf("") }
-    var phonenoError by remember { mutableStateOf("") }
     HorizontalDivider()
     Box() {
 
@@ -208,37 +212,22 @@ fun EditInfo(
             OutlinedTextField(
                 value = name,
                 onValueChange = {
-                    name = it
-                    viewModel.updateName(it)
+                    onNameChange(it)
                 },
                 label = {
 
-
-                        Text(
-                            "Name",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Gray,
-                            maxLines = 1
-                        )
+                    Text(
+                        "Name",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray,
+                        maxLines = 1
+                    )
                 },
-                isError = nameError.isNotEmpty(),
-                modifier = Modifier.fillMaxWidth(),
-                supportingText = {
-                    if (name.any{it.isDigit()}){
-                        Text("xyz")
-                        }
-                }
+                modifier = Modifier.fillMaxWidth()
 
             )
 
-            if (nameError.isNotEmpty()) {
-                Text(
-                    text = nameError,
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
 
             Spacer(Modifier.height(10.dp))
 
@@ -252,7 +241,6 @@ fun EditInfo(
             OutlinedTextField(
                 value = username,
                 onValueChange = {
-                    username = it
                     viewModel.updateUserName(it)
                 },
                 label = {
@@ -264,17 +252,8 @@ fun EditInfo(
                         maxLines = 1
                     )
                 },
-                isError = nameError.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
-
-            if (usernameError.isNotEmpty()) {
-                Text(
-                    text = usernameError,
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
 
             Spacer(Modifier.height(10.dp))
 
@@ -289,7 +268,6 @@ fun EditInfo(
             OutlinedTextField(
                 value = bio,
                 onValueChange = {
-                    bio = it
                     viewModel.updateBio(it)
                 },
                 label = {
@@ -305,16 +283,8 @@ fun EditInfo(
                             .height(150.dp)
                     )
                 },
-                isError = bioError.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
-            if (bioError.isNotEmpty()) {
-                Text(
-                    text = bioError,
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
 
             Spacer(Modifier.height(20.dp))
 
@@ -351,7 +321,6 @@ fun EditInfo(
             OutlinedTextField(
                 value = email,
                 onValueChange = {
-                    email = it
                     viewModel.updateEmail(it)
                 },
                 label = {
@@ -365,16 +334,8 @@ fun EditInfo(
                         )
                     }
                 },
-                isError = emailError.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
-            if (emailError.isNotEmpty()) {
-                Text(
-                    text = emailError,
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
 
             Spacer(Modifier.height(20.dp))
 
@@ -388,7 +349,6 @@ fun EditInfo(
             OutlinedTextField(
                 value = phoneno,
                 onValueChange = {
-                    phoneno = it
                     viewModel.updatePhoneno(it)
                 },
                 label = {
@@ -400,16 +360,8 @@ fun EditInfo(
                         maxLines = 1
                     )
                 },
-                isError = phonenoError.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
             )
-            if (phonenoError.isNotEmpty()) {
-                Text(
-                    text = phonenoError,
-                    color = Color.Red,
-                    fontSize = 12.sp
-                )
-            }
 
             Spacer(modifier = Modifier.height(30.dp))
 
